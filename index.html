@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>TP1 - PowerShell</title>
+  </head>
+  <body>
+    <main>
+      <h1>Trabajo Práctico 1: PowerShell</h1>
+      <p>
+        Este repositorio contiene un script que muestra información de
+        PowerShell, la política de ejecución, la edición de Windows y un
+        relevamiento completo de la PC mediante <code>systeminfo</code>.
+      </p>
+      <p>
+        El script se muestra a continuación:
+      </p>
+      <pre><code># TP1 - Información del sistema
+
+function Write-Section {
+    param(
+        [Parameter(Mandatory)]
+        [string]$Title
+    )
+
+    Write-Host "`n=== $Title ===" -ForegroundColor Cyan
+}
+
+Write-Section -Title 'Versión de PowerShell'
+$PSVersionTable | Format-List
+
+Write-Section -Title 'Política de ejecución de PowerShell'
+Get-ExecutionPolicy -List | Format-Table -AutoSize
+
+Write-Section -Title 'Edición del sistema operativo'
+$operatingSystem = Get-CimInstance -ClassName Win32_OperatingSystem
+$windowsEdition = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'
+
+[PSCustomObject]@{
+    ProductName  = $windowsEdition.ProductName
+    Edition      = $windowsEdition.EditionID
+    Version      = $operatingSystem.Version
+    BuildNumber  = $operatingSystem.BuildNumber
+    Architecture = $operatingSystem.OSArchitecture
+} | Format-List
+
+Write-Section -Title 'Información completa de la PC (systeminfo)'
+cmd /c systeminfo</code></pre>
+    </main>
+  </body>
+</html>
